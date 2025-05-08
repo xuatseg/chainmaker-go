@@ -97,6 +97,7 @@ func StartSender(senderIp, receiverIp string, msgKb int) error {
 	netConn.AddTrustRoot(chain2, caBytes6666)
 	netConn.AddTrustRoot(chain2, caBytes7777)
 	netConn.InitPubsub(chain2, 0)
+
 	if err = netConn.Start(); err != nil {
 		return err
 	}

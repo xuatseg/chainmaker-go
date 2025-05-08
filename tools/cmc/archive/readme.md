@@ -1,49 +1,76 @@
-# cmc 归档中心命令
+# 数据归档工具
 
-## cmc归档数据命令
-```powershell
-./cmc archive dump 100 --sdk-conf-path ./testdata/sdk_config.yml --mode quick
+本工具提供长安链数据的归档、查询和恢复功能，支持离线存储和历史数据管理。
 
-```
-## cmc查询归档中心当前已归档数据状态命令
-```powershell
-./cmc archive query archived-status --sdk-conf-path ./testdata/sdk_config.yml
-```
+## 功能列表
 
-## cmc查询链上当前已归档数据状态命令
+1. **数据归档**
+   - 区块数据归档
+   - 状态数据归档
+   - 交易数据归档
 
-```powershell
-./cmc archive query chain-archived-status --sdk-conf-path ./testdata/sdk_config.yml
-```
+2. **数据操作**  
+   - 归档数据查询
+   - 数据完整性验证
+   - 归档数据恢复
 
+## 使用指南
 
-## cmc查询归档中心,根据高度查区块命令
-```powershell
-./cmc archive query block-by-height 20  --sdk-conf-path ./testdata/sdk_config.yml
-```
+### 1. 归档命令
+```bash
+# 归档指定高度的区块
+cmc archive dump -start 100000 -end 100100 -output ./backup
 
-## cmc查询归档中心,根据txId查询区块命令
-```powershell
-./cmc archive query block-by-txid 17221b132a25209aca52fdfc07218265e4377ef0099d46a49edfd032001fc2be --sdk-conf-path ./testdata/sdk_config.yml
+# 归档状态数据
+cmc archive dump -type state -output ./state_backup
 ```
 
-## cmc查询归档中心,根据txId查询交易命令
-```powershell
-./cmc archive query tx 17221b132a25209aca52fdfc07218265e4377ef0099d46a49edfd032001fc2be  --sdk-conf-path ./testdata/sdk_config.yml
+### 2. 查询命令
+```bash
+# 查询归档数据
+cmc archive query -height 100050
+
+# 列出所有归档点
+cmc archive list
 ```
 
-## cmc查询归档中心,根据block hash查询区块命令
-
-```powershell
-./cmc archive query block-by-hash 17221b132a25209aca52fdfc07218265e4377ef0099d46a49edfd032001fc2be --sdk-conf-path ./testdata/sdk_config.yml
+### 3. 恢复命令
+```bash
+# 从归档恢复数据
+cmc archive restore -input ./backup -height 100050
 ```
 
-## cmc清理链上区块数据命令
-```powershell
-./cmc archive archive 10000 --timeout 20 --sdk-conf-path ./testdata/sdk_config.yml 
-```  
+## 实现原理
 
-## restore 恢复链上区块数据命令,恢复到指定高度
-```powershell
-./cmc archive restore 3000 --timeout 20 --sdk-conf-path ./testdata/sdk_config.yml 
+### 1. 数据格式
 ```
+归档目录结构：
+├── meta.json       # 元数据
+├── blocks/        # 区块数据
+│   ├── 100000.blk
+│   └── ...
+└── state/         # 状态数据
+    ├── 100000.st
+    └── ...
+```
+
+### 2. 核心流程
+1. 创建归档快照
+2. 验证数据一致性
+3. 压缩存储数据
+4. 生成校验信息
+
+## 注意事项
+
+1. 存储要求
+   - 确保足够的磁盘空间
+   - 推荐使用专用存储设备
+
+2. 性能影响
+   - 归档期间可能影响节点性能
+   - 建议在低峰期执行
+
+3. 安全建议
+   - 加密敏感数据
+   - 验证归档文件完整性
+   - 多地备份重要数据
